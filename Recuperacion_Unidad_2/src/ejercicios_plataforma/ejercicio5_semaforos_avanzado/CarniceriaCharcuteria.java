@@ -11,27 +11,28 @@ public class CarniceriaCharcuteria extends Thread {
     @Override
     public void run() {
         try {
+            Thread.sleep((long) (Math.random() * 10000 + 1));
             while (!carniceriaHecha || !charcuteriaHecha) {
                 if (!carniceriaHecha) {
                     if (carniceria.tryAcquire()) {
-                        System.out.println("El cliente " + currentThread().getName() + " está siendo atendido en la carnicería");
-                        Thread.sleep(10000);
-                        System.out.println("El cliente " + currentThread().getName() + " ha terminado en la carnicería");
+                        System.out.println(currentThread().getName() + ":\nEstá siendo atendido en la CARNICERIA\n");
+                        Thread.sleep((long) (Math.random() * 10000 + 1));
+                        System.out.println(currentThread().getName() + ":\nHa terminado en la CARNICERIA\n");
                         carniceria.release();
                         carniceriaHecha = true;
                     }
                 }
                 if (!charcuteriaHecha) {
                     if (charcuteria.tryAcquire()) {
-                        System.out.println("El cliente " + currentThread().getName() + " está siendo atendido en la charcuteria");
-                        Thread.sleep(10000);
-                        System.out.println("El cliente " + currentThread().getName() + " ha terminado en la charcuteria");
+                        System.out.println(currentThread().getName() + ":\nEstá siendo atendido en la charcuteria\n");
+                        Thread.sleep((long) (Math.random() * 10000 + 1));
+                        System.out.println(currentThread().getName() + ":\nHa terminado en la charcuteria\n");
                         charcuteria.release();
                         charcuteriaHecha = true;
                     }
                 }
             }
-            System.out.println("El cliente " + currentThread().getName() + " ha sido atendido completamente");
+            System.out.println(currentThread().getName() + ":\nha sido atendido completamente\n");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
