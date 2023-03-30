@@ -1,7 +1,5 @@
 package ejercicios_plataforma.ejercicio6_estudiantes_y_libros;
 
-import ejercicios_plataforma.ejercicio5_semaforos_avanzado.CarniceriaCharcuteria;
-
 /* Hay cuatro estudiantes que comparten nueve libros. Los estudiantes seleccionan
  * dos libros al azar y, una vez obtenidos, los utilizan durante un tiempo aleatorio
  * de entre 3  y 5 segundos. En caso de que alguno de los dos libros no estuviese libre,
