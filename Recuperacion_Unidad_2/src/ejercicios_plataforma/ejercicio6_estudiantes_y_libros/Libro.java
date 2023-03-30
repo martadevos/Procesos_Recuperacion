@@ -8,10 +8,6 @@ public class Libro {
         return numLibro;
     }
 
-    public void setNumLibro(int numLibro) {
-        this.numLibro = numLibro;
-    }
-
     public boolean isOcupado() {
         return ocupado;
     }
