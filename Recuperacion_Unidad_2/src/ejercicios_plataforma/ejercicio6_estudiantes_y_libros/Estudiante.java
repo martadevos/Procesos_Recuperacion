@@ -26,7 +26,5 @@ public class Estudiante extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }

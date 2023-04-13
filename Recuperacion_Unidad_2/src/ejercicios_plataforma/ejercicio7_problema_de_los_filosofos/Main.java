@@ -1,5 +1,7 @@
 package ejercicios_plataforma.ejercicio7_problema_de_los_filosofos;
 
+import ejercicios_plataforma.ejercicio6_estudiantes_y_libros.Estudiante;
+
 /*
  * Implementa una solución sencilla al problema de la comida de los 5 filósofos de Dijkstra que evite el interbloqueo.
  * Cinco filósofos pasan la vida pensando en una mesa redonda, y solo dejan de pensar de vez en cuando para comer de
@@ -22,4 +24,12 @@ package ejercicios_plataforma.ejercicio7_problema_de_los_filosofos;
  * multihilo para ver el comportamiento de los filósofos.
  */
 public class Main {
+    public static void main(String[] args) {
+        Filosofo filosofo;
+        for (int i = 0; i < 5; i++) {
+            filosofo = new Filosofo();
+            filosofo.setName(String.valueOf(i));
+            filosofo.start();
+        }
+    }
 }
