@@ -47,13 +47,21 @@ public class Cliente {
      **/
     private static int pedirNumACliente(){
         Scanner s = new Scanner(System.in);
-        int num;
-
+        int num = 0;
+        boolean salir;
         do {
             System.out.println("Introduzca un número entero positivo");
-            num = s.nextInt();
-            if (num < 0) System.out.println("Error, el número no puede ser negativo");;
-        }while (num < 0);
+            try {
+                num = s.nextInt();
+                if (num < 0) {
+                    System.out.println("Error, el número no puede ser negativo");
+                    salir = false;
+                }else salir = true;
+            }catch (Exception e){
+                salir = false;
+                System.out.println("Error, debe introducir un número entero");
+            }
+        }while (!salir);
         return num;
     }
 }
