@@ -1,4 +1,4 @@
-package ejercicios_conexion_tcp.ejercicio1;
+package ejercicios_conexion_tcp.ejercicio4;
 
 import java.io.*;
 import java.net.ServerSocket;

@@ -1,4 +1,4 @@
-package ejercicios_conexion_tcp.ejercicio1;
+package ejercicios_conexion_tcp.ejercicio2;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -11,7 +11,7 @@ public class Cliente {
         try {
             System.out.println("CLIENTE\nCreando socket...\n");
             InetAddress direccion = InetAddress.getLocalHost(); //Coge el localhost
-            Socket socketClient = new Socket(direccion, 2500); //Crea el socket con el localhost y el puerto 2500
+            Socket socketClient = new Socket(direccion, 1500); //Crea el socket con el localhost y el puerto 2500
 
             System.out.println("CLIENTE\nAbriendo flujos de E/S...\n");
             OutputStream os = socketClient.getOutputStream(); //Abre flujo esctritura

@@ -1,4 +1,4 @@
-package ejercicios_conexion_tcp.ejercicio1;
+package ejercicios_conexion_tcp.ejercicio2;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -9,7 +9,7 @@ public class Servidor {
         int numCliente;
         try {
             System.out.println("SERVER:\nAbriendo conexión...\n");
-            ServerSocket socketServer = new ServerSocket(2500); //crea el socket con el puerto 2500
+            ServerSocket socketServer = new ServerSocket(1500); //crea el socket con el puerto 2500
 
             while (true){
                 System.out.println("SERVER:\nEsperando peticiones...\n");
@@ -27,7 +27,7 @@ public class Servidor {
                 System.out.println("SERVER:\nEnviando mensaje al cliente...\n");
                 OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
                 BufferedWriter bw = new BufferedWriter(osw);
-                bw.write("el número " + numCliente + ((esPrimo(numCliente))?" es primo":" no es primo"));
+                bw.write("el factorial del número " + numCliente + " es " + sacaFactorial(numCliente));
                 bw.newLine();
                 bw.flush();
 
@@ -46,12 +46,11 @@ public class Servidor {
         }
     }
 
-    public static boolean esPrimo(int numero) {
-        boolean primo = false;
-        for (int x = 2; x < numero / 2 && !primo; x++) {
-            primo = (numero % x != 0);
+    public static int sacaFactorial(int numero) {
+        int factorial = 1;
+        while ( numero!=0) {
+            factorial=factorial*numero; numero--;
         }
-        primo = !(numero == 0 || numero == 1);
-        return primo;
+        return factorial;
     }
 }
