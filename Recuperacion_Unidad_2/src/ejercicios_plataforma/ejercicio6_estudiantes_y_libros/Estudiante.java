@@ -13,16 +13,15 @@ public class Estudiante extends Thread {
                 }
                 libros[librosLeer[0] - 1].setOcupado(true);
                 libros[librosLeer[1] - 1].setOcupado(true);
-
                 System.out.println(currentThread().getName() + ":\nEstá leyendo los libros\n" + libros[librosLeer[0]].getNumLibro() + " y " + libros[librosLeer[1]].getNumLibro() + "\n");
-                Thread.sleep((long) (Math.random() * 5 +2));
-
+            }
+            Thread.sleep((long) (Math.random() * 5 + 2));
+            synchronized (libros) {
                 libros[librosLeer[0] - 1].setOcupado(false);
                 libros[librosLeer[1] - 1].setOcupado(false);
-                System.out.println(currentThread().getName() + ":\nHa soltado los libros\n");
                 libros.notifyAll();
-
             }
+            System.out.println(currentThread().getName() + ":\nHa soltado los libros\n");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
