@@ -5,34 +5,33 @@ public class Persona extends Thread{
     private final String[] colores = {"rojo", "azul", "verde"};
     @Override
     public void run() {
-        int colorElegido = (int)(Math.random()*3);
-        if (colorElegido == 3) colorElegido = 2;
-        int[] botes = asignaBotesPintura(colorElegido);
-        System.out.println(currentThread().getName() + " va a hacer el color " + colores[colorElegido]);
-        try {
-            synchronized (botesPintura) {
-                while (botesPintura[botes[0]].isOcupado() || botesPintura[botes[1]].isOcupado()) {
-                    System.out.println(currentThread().getName() + " está esperando para coger los botes");
-                    botesPintura.wait();
+        while(true) {
+            int colorElegido = (int) (Math.random() * 2);
+            int[] botes = asignaBotesPintura(colorElegido);
+            System.out.println(currentThread().getName() + " va a hacer el color " + colores[colorElegido]);
+            try {
+                synchronized (botesPintura) {
+                    while (botesPintura[botes[0]].isOcupado() || botesPintura[botes[1]].isOcupado()) {
+                        System.out.println(currentThread().getName() + " está esperando para coger los botes");
+                        botesPintura.wait();
+                    }
+                    botesPintura[botes[0]].setOcupado(true);
+                    botesPintura[botes[1]].setOcupado(true);
+                    System.out.println(currentThread().getName() + " ha cogido los botes: " + botesPintura[botes[0]].getColor() + " y " + botesPintura[botes[1]].getColor());
                 }
-                botesPintura[botes[0]].setOcupado(true);
-                botesPintura[botes[1]].setOcupado(true);
-                System.out.println(currentThread().getName() + " ha cogido los botes: " + botesPintura[botes[0]].getColor() + " y " + botesPintura[botes[1]].getColor());
-                //////////////////////PREGUNTAR/////////////////////////////////
-                botesPintura.notifyAll();
-            }
-            System.out.println(currentThread().getName() + " está haciendo el color");
-            Thread.sleep((long) (Math.random() * 5 + 1) *100);
-            synchronized (botesPintura) {
-                botesPintura[botes[0]].setOcupado(false);
-                botesPintura[botes[1]].setOcupado(false);
-                botesPintura.notifyAll();
-            }
-            System.out.println(currentThread().getName() + " ha soltado los botes");
+                System.out.println(currentThread().getName() + " está haciendo el color");
+                Thread.sleep((long) (Math.random() * 5 + 1) * 1000);
+                synchronized (botesPintura) {
+                    botesPintura[botes[0]].setOcupado(false);
+                    botesPintura[botes[1]].setOcupado(false);
+                    botesPintura.notifyAll();
+                }
+                System.out.println(currentThread().getName() + " ha soltado los botes");
 
-            Thread.sleep((long) (Math.random() * 2 + 1) *1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+                Thread.sleep((long) (Math.random() * 5 + 1) * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
