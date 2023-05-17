@@ -2,30 +2,30 @@ package ejercicios_examen.ejercicio2examen;
 
 public class Productor implements Runnable {
     final Colecta colecta;
-    String nombre;
 
-    Productor(Colecta colecta, String nombre) {
+    Productor(Colecta colecta) {
         this.colecta = colecta;
-        this.nombre = nombre;
     }
 
     @Override
     public void run() {
         while (true) {
-            int cantidad = (int) (Math.random() * 21) + 4;
-            synchronized (this.colecta) {
-                try {
-                    while (this.colecta.limiteSuperado()) {
-                        System.out.println("\nEl hilo " + this.nombre + " está esperando porque se ha superado el límite de 2000");
+            try {
+                Thread.sleep((long) (Math.random() * 190) + 10);
+                int cant = (int) (Math.random() * 21) + 4;
+                System.out.println("\nEl hilo " + Thread.currentThread().getName().toUpperCase() + " va a recolectar " + cant);
+                synchronized (this.colecta) {
+                    while (this.colecta.superaLimite(cant)) {
+                        System.out.println("\nEl hilo " + Thread.currentThread().getName().toUpperCase() + " está esperando a poder añadir su colecta");
                         this.colecta.wait();
                     }
-                    this.colecta.poner(cantidad);
-                    Thread.sleep((long) (Math.random() * 190) + 10);
-                    System.out.println("\nEl hilo " + this.nombre + " ha añadido a la colecta " + cantidad);
+                    this.colecta.poner(cant);
+                    System.out.println("\nEl hilo " + Thread.currentThread().getName().toUpperCase() + " ha añadido a la colecta " + cant);
+                    System.out.println("\nEn la colecta hay: " + this.colecta.getCantidad());
                     this.colecta.notify();
-                } catch (InterruptedException e) {
-                    System.out.println("¡UPS!...Ha habido un error");
                 }
+            } catch (InterruptedException e) {
+                System.out.println("¡UPS!...Ha habido un error");
             }
         }
 

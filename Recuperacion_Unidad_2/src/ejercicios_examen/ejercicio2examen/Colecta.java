@@ -11,11 +11,15 @@ public class Colecta {
         this.cantidad = cant;
     }
 
-    synchronized public boolean limiteSuperado() {
-        return (this.cantidad > 2000);
+    synchronized public int getCantidad() {
+        return this.cantidad;
+    }
+
+    synchronized public boolean superaLimite(int cant) {
+        return ((this.cantidad + cant) > 2000);
     }
 
     synchronized public boolean haySuficiente(int cant) {
-        return (this.cantidad < cant);
+        return (this.cantidad > cant);
     }
 }

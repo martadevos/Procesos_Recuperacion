@@ -33,10 +33,31 @@ package ejercicios_examen.ejercicio2examen;
  *      Establece las siguientes prioridades a los hilos recolectores: 1, 4, 7 y 10.
  *      ¿Se percibe que hay hilos que recolectan más dinero que otros? Añade comentarios en
  *      el código indicando si se percibe alguna tendencia.
+ *
+ *      Los hilos con prioridad 1 y 4 recolectan con mayor frecuencia que los hilos con prioridad 7 y 10, es decir,
+ *      a mayor es el valor introducido a la prioridad, menor prioritario es el hilo, siendo el mínimo para ella 1, el máximo 10
+ *      y el establecido por defecto 5
  */
 
 public class Main {
     public static void main(String[] args) {
+        int p = 4;
+        int c = 4;
+        int prioridad=1;
+        Colecta colecta = new Colecta();
 
+        for(int i=1; i<=p; i++) {
+            Thread hilo = new Thread(new Productor(colecta));
+            hilo.setPriority(prioridad);
+            hilo.setName("Productor" + i + " prioridad" + prioridad);
+            prioridad+=3;
+            hilo.start();
+        }
+
+        for(int i=1; i<=c; i++) {
+            Thread hilo = new Thread(new Consumidor(colecta));
+            hilo.setName("Consumidor " + i);
+            hilo.start();
+        }
     }
 }
