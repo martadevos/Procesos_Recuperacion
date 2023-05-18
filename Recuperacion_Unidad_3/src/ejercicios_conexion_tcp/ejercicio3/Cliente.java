@@ -25,10 +25,11 @@ public class Cliente {
 
                 System.out.println("CLIENTE\nLeyendo mensaje del servidor...\n");
                 mensajeServidor = is.read();
-                if (mensajeServidor == 1) {
+                if (mensajeServidor == 0) {
                     System.out.println("Has acertado  :)");
+                    acertado = true;
                 } else {
-                    System.out.println("Inténtalo de nuevo  :(");
+                    System.out.println(((mensajeServidor > 1) ? "El número secreto es mayor que el introducido" : "El número secreto es menor que el introducido") + ", inténtalo de nuevo  :(");
                 }
             }
 
@@ -57,7 +58,7 @@ public class Cliente {
         int num = 0;
         boolean salir;
         do {
-            System.out.println("Introduzca un número entero entre 0 y 10");
+            System.out.println("Introduzca un número entero entre 0 y 100");
             num = s.nextInt();
             if (num < 0 || num > 100) {
                 System.out.println("Error, el número no puede ser negativo ni mayor que 100");

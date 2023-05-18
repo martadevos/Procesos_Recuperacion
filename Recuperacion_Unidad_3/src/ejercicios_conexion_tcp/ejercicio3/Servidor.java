@@ -13,11 +13,11 @@ public class Servidor {
             System.out.println("SERVER:\nAbriendo conexión...\n");
             ServerSocket socketServer = new ServerSocket(2000); //crea el socket con el puerto 2500
 
-            while (true){
+            while (true) {
                 System.out.println("SERVER:\nEsperando peticiones...\n");
                 Socket socketClient = socketServer.accept(); //Espera a que haya una petición del cliente y la acepta cunado llega
 
-                numAleatorio = generaNumAleatorio();
+                numAleatorio = (int) (Math.random() * 100);
 
                 System.out.println("SERVER:\nAbriendo flujos de E/S...\n");
                 InputStream is = socketClient.getInputStream(); //Abre flujo de lectura
@@ -30,7 +30,14 @@ public class Servidor {
                     System.out.println("MENSAJE DEL CLIENTE\nEl cliente ha enviado el número " + numCliente + "\n");
 
                     System.out.println("SERVER:\nEnviando mensaje al cliente...\n");
-                    os.write((numAleatorio == numCliente)? 1:0);
+                    if (numAleatorio == numCliente){
+                        os.write(0);
+                        acertado = true;
+                    } else if(numAleatorio < numCliente){
+                        os.write(1);
+                    }else {
+                        os.write(2);
+                    }
                 }
 
                 System.out.println("SERVER:\nCerrando flujos de E/S...\n");
@@ -44,25 +51,5 @@ public class Servidor {
             System.out.println("Error al crear el socket");
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Función que genera un número aleatorio entre 0 y 100
-     *
-     * @return Entero entre 0 y 100
-     **/
-    private static int generaNumAleatorio() {
-        Scanner s = new Scanner(System.in);
-        int num = 0;
-        boolean salir;
-        do {
-            System.out.println("Introduzca un número entero positivo");
-            num = s.nextInt();
-            if (num < 0) {
-                System.out.println("Error, el número no puede ser negativo");
-                salir = false;
-            } else salir = true;
-        } while (!salir);
-        return num;
     }
 }

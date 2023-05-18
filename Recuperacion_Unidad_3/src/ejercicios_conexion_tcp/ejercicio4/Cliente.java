@@ -17,8 +17,16 @@ public class Cliente {
             OutputStream os = socketClient.getOutputStream(); //Abre flujo esctritura
             InputStream is = socketClient.getInputStream(); //Abre flujo lectura
 
-            System.out.println("CLIENTE\nEnviando mensaje al servidor...");
-            os.write(pedirNumACliente()); //Llama a la función para pedir un númeroy lo envía al servidor
+            FileReader fr = new FileReader("src/ejercicios_conexion_tcp/ejercicio4/Ejercicio4.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String linea;
+            do {
+                linea = br.readLine();
+                System.out.println("CLIENTE\nEnviando mensaje al servidor...");
+                if (linea.matches("^[0-9]+$")) {
+                    os.write(linea); //Llama a la función para pedir un númeroy lo envía al servido
+                }
+            }while (linea != null);
 
             System.out.println("CLIENTE\nLeyendo mensaje del servidor...\n");
             InputStreamReader isr = new InputStreamReader(is, "UTF-8");
@@ -41,24 +49,5 @@ public class Cliente {
         }
     }
 
-    /**
-     * Función que pide un número por consola, lo escanea, comprueba si es positivo y
-     * sigue pidiendo y comprobando hasta que introduce uno positivo y lo devuelve
-     *
-     * @return Entero introducido por consola
-     **/
-    private static int pedirNumACliente() {
-        Scanner s = new Scanner(System.in);
-        int num = 0;
-        boolean salir;
-        do {
-            System.out.println("Introduzca un número entero positivo");
-            num = s.nextInt();
-            if (num < 0) {
-                System.out.println("Error, el número no puede ser negativo");
-                salir = false;
-            } else salir = true;
-        } while (!salir);
-        return num;
-    }
+
 }
