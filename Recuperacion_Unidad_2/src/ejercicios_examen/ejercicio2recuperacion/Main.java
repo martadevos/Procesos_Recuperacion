@@ -34,6 +34,7 @@ public class Main {
         for (int i = 0; i < 3; i++) {
             persona = new Persona();
             persona.setName(nombres[i]);
+            persona.setColor(i);
             persona.start();
         }
     }

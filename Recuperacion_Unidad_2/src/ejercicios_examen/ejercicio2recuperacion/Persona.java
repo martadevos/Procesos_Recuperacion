@@ -3,12 +3,17 @@ package ejercicios_examen.ejercicio2recuperacion;
 public class Persona extends Thread{
     public static final BotePintura[] botesPintura = {new BotePintura("cian"), new BotePintura("magenta"), new BotePintura("amarillo")};
     private final String[] colores = {"rojo", "azul", "verde"};
+    private int color;
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     @Override
     public void run() {
         while(true) {
-            int colorElegido = (int) (Math.random() * 2);
-            int[] botes = asignaBotesPintura(colorElegido);
-            System.out.println(currentThread().getName() + " va a hacer el color " + colores[colorElegido]);
+            int[] botes = asignaBotesPintura(color);
+            System.out.println(currentThread().getName() + " va a hacer el color " + colores[color]);
             try {
                 synchronized (botesPintura) {
                     while (botesPintura[botes[0]].isOcupado() || botesPintura[botes[1]].isOcupado()) {

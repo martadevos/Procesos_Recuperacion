@@ -41,23 +41,19 @@ package ejercicios_examen.ejercicio2examen;
 
 public class Main {
     public static void main(String[] args) {
-        int p = 4;
-        int c = 4;
         int prioridad=1;
         Colecta colecta = new Colecta();
 
-        for(int i=1; i<=p; i++) {
-            Thread hilo = new Thread(new Productor(colecta));
-            hilo.setPriority(prioridad);
-            hilo.setName("Productor" + i + " prioridad" + prioridad);
+        for(int i=1; i<=4; i++) {
+            Thread produc = new Thread(new Productor(colecta));
+            produc.setPriority(prioridad);
+            produc.setName("Productor" + i + " prioridad" + prioridad);
             prioridad+=3;
-            hilo.start();
-        }
+            produc.start();
 
-        for(int i=1; i<=c; i++) {
-            Thread hilo = new Thread(new Consumidor(colecta));
-            hilo.setName("Consumidor " + i);
-            hilo.start();
+            Thread consum = new Thread(new Consumidor(colecta));
+            consum.setName("Consumidor " + i);
+            consum.start();
         }
     }
 }

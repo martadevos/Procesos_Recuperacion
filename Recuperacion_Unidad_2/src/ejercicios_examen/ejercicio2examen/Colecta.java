@@ -8,7 +8,7 @@ public class Colecta {
     }
 
     synchronized public void poner(int cant) {
-        this.cantidad = cant;
+        this.cantidad += cant;
     }
 
     synchronized public int getCantidad() {
