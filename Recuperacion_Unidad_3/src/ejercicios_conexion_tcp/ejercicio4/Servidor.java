@@ -6,10 +6,11 @@ import java.net.Socket;
 
 public class Servidor {
     public static void main(String[] args) {
-        int numCliente;
+        String mensajeCliente;
+        int suma = 0;
         try {
             System.out.println("SERVER:\nAbriendo conexión...\n");
-            ServerSocket socketServer = new ServerSocket(2500); //crea el socket con el puerto 2500
+            ServerSocket socketServer = new ServerSocket(3000); //crea el socket con el puerto 2500
 
             while (true){
                 System.out.println("SERVER:\nEsperando peticiones...\n");
@@ -18,16 +19,23 @@ public class Servidor {
                 System.out.println("SERVER:\nAbriendo flujos de E/S...\n");
                 InputStream is = socketClient.getInputStream(); //Abre flujo de lectura
                 OutputStream os = socketClient.getOutputStream(); //Abre flujo de escritura
+                InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+                BufferedReader br = new BufferedReader(isr);
 
-                System.out.println("SERVER:\nLeyendo mensaje del cliente...\n");
-                numCliente = is.read();
-                //Muestra el número del cliente y llama a la funcion esPrimo para comprobar si lo es o no, si devuleve true escribe " y es primo", si no, " y no es primo"
-                System.out.println("MENSAJE DEL CLIENTE\nEl cliente ha enviado el número " + numCliente + "\n");
+                //Lee el número enviado por el cliente y lo suma
+                System.out.println("SERVER:\nLeyendo mensajes del cliente...\n");
+                mensajeCliente = br.readLine();
+                do {
+                    if (mensajeCliente.matches("^[0-9]+$")) {
+                        suma += Integer.parseInt(mensajeCliente);
+                    }
+                    mensajeCliente = br.readLine();
+                }while (mensajeCliente != null);
 
                 System.out.println("SERVER:\nEnviando mensaje al cliente...\n");
                 OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
                 BufferedWriter bw = new BufferedWriter(osw);
-                bw.write("el número " + numCliente + ((esPrimo(numCliente))?" es primo":" no es primo"));
+                bw.write("La suma de todos los números es " + suma);
                 bw.newLine();
                 bw.flush();
 
@@ -46,7 +54,7 @@ public class Servidor {
         }
     }
 
-    public static boolean esPrimo(int numero) {
+    public static boolean sumaNumeros(int numero) {
         boolean primo = false;
         for (int x = 2; x < numero / 2 && !primo; x++) {
             primo = (numero % x != 0);
