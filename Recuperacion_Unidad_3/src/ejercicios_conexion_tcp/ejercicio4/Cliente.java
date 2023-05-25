@@ -22,26 +22,24 @@ public class Cliente {
             FileReader fr = new FileReader("src/ejercicios_conexion_tcp/ejercicio4/Ejercicio4.txt");
             BufferedReader br = new BufferedReader(fr);
             String linea = br.readLine();
-            System.out.println("CLIENTE\nEnviando mensaje al servidor...");
-            do {
+            while (linea != null) {
+                os.write(Integer.parseInt(linea));
                 bw.write(linea);
+                bw.newLine();
+                bw.flush();
                 linea = br.readLine();
-            } while (linea != null);
-            fr.close();
-            br.close();
+            }
 
-            System.out.println("CLIENTE\nLeyendo mensaje del servidor...\n");
-            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-            BufferedReader br2 = new BufferedReader(isr);
-            System.out.println("MENSAJE DEL SERVIDOR\n" + br2.readLine() + "\n"); //Recibe y muestra por consola el mensaje del servidor
+            int sumaNumeros = is.read();
+            System.out.println("La suma de todos los números es: " +sumaNumeros); //Recibe y muestra por consola el mensaje del servidor
 
             System.out.println("CLIENTE\nCerrando flujos de E/S...\n");
             os.close(); //Cierra flujo lectura
             is.close(); //Cierra flujo escritura
             osw.close();
             bw.close();
-            isr.close();
-            br2.close();
+            fr.close();
+            br.close();
 
             socketClient.close(); //Cierra la conexión
         } catch (UnknownHostException e) {
@@ -52,6 +50,4 @@ public class Cliente {
             e.printStackTrace();
         }
     }
-
-
 }

@@ -23,27 +23,23 @@ public class Servidor {
                 BufferedReader br = new BufferedReader(isr);
 
                 //Lee el número enviado por el cliente y lo suma
-                System.out.println("SERVER:\nLeyendo mensajes del cliente...\n");
                 mensajeCliente = br.readLine();
-                do {
+                while (mensajeCliente != null && !mensajeCliente.isEmpty()){
+                    System.out.println(mensajeCliente);
                     if (mensajeCliente.matches("^[0-9]+$")) {
                         suma += Integer.parseInt(mensajeCliente);
+                        System.out.println(suma);
                     }
                     mensajeCliente = br.readLine();
-                }while (mensajeCliente != null);
-
+                }
                 System.out.println("SERVER:\nEnviando mensaje al cliente...\n");
-                OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-                BufferedWriter bw = new BufferedWriter(osw);
-                bw.write("La suma de todos los números es " + suma);
-                bw.newLine();
-                bw.flush();
+                os.write(suma);
 
                 System.out.println("SERVER:\nCerrando flujos de E/S...\n");
                 is.close(); //Cierra flujo de lectura
                 os.close(); //Cierra flujo de escritura
-                osw.close();
-                bw.close();
+                br.close();
+                isr.close();
 
                 socketClient.close();
             }
@@ -52,14 +48,5 @@ public class Servidor {
             System.out.println("Error al crear el socket");
             e.printStackTrace();
         }
-    }
-
-    public static boolean sumaNumeros(int numero) {
-        boolean primo = false;
-        for (int x = 2; x < numero / 2 && !primo; x++) {
-            primo = (numero % x != 0);
-        }
-        primo = !(numero == 0 || numero == 1);
-        return primo;
     }
 }
