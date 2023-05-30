@@ -23,14 +23,15 @@ public class Cliente {
             BufferedReader br = new BufferedReader(fr);
             String linea = br.readLine();
             while (linea != null) {
-                os.write(Integer.parseInt(linea));
-                bw.write(linea);
+                bw.write(Integer.parseInt(linea));
                 bw.newLine();
-                bw.flush();
                 linea = br.readLine();
             }
+            bw.flush();
 
-            int sumaNumeros = is.read();
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            BufferedReader br2 = new BufferedReader(isr);
+            String sumaNumeros = br2.readLine();
             System.out.println("La suma de todos los números es: " +sumaNumeros); //Recibe y muestra por consola el mensaje del servidor
 
             System.out.println("CLIENTE\nCerrando flujos de E/S...\n");
