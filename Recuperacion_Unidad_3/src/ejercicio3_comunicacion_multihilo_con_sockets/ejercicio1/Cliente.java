@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Cliente {
     public static void main(String[] args) {
-        DatagramSocket socket = null;
+        DatagramSocket socket;
         int puertoServidor = 50000;
         String nombreServidor = "localhost";
         String numero;
@@ -70,7 +70,7 @@ public class Cliente {
      **/
     private static String pedirNumACliente() {
         Scanner s = new Scanner(System.in);
-        int num = 0;
+        int num;
         boolean salir;
         do {
             System.out.println("Introduzca un número entero entre 0 y 100");
