@@ -1,48 +1,63 @@
 package ejercicio3_comunicacion_multihilo_con_sockets.ejercicio1;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Scanner;
 
 public class Cliente {
     public static void main(String[] args) {
-        int mensajeServidor;
+        DatagramSocket socket = null;
+        int puertoServidor = 50000;
+        String nombreServidor = "localhost";
+        String numero;
+
+        String mensajeServidor;
         boolean acertado = false;
         try {
-            System.out.println("CLIENTE\nCreando socket...\n");
-            InetAddress direccion = InetAddress.getLocalHost(); //Coge el localhost
-            Socket socketClient = new Socket(direccion, 1500); //Crea el socket con el localhost y el puerto 2500
+            //Crea y abre la conexión con el servidor
+            System.out.println("(Cliente): Estableciendo parámetros de conexión...");
+            InetAddress direccionServidor = InetAddress.getByName(nombreServidor);
+            System.out.println("(Cliente): Creando el socket...");
+            socket = new DatagramSocket();
 
-            System.out.println("CLIENTE\nAbriendo flujos de E/S...\n");
-            OutputStream os = socketClient.getOutputStream(); //Abre flujo esctritura
-            InputStream is = socketClient.getInputStream(); //Abre flujo lectura
-
+            System.out.println("(Cliente): Creando datagrama...");
+            byte[] bufferSalida;
             while (!acertado) {
                 System.out.println("CLIENTE\nEnviando mensaje al servidor...");
-                os.write(pedirNumACliente()); //Llama a la función para pedir un númeroy lo envía al servidor
+                //Llama a la función para pedir un número y lo asigna a la variable numero
+                numero = pedirNumACliente();
+                //Convierte el número introducido en un array de bytes
+                bufferSalida = numero.getBytes();
+                //Envía el datagrama al servidor
+                DatagramPacket paqueteSalida = new DatagramPacket(bufferSalida, bufferSalida.length, direccionServidor, puertoServidor);
+                System.out.println("(Cliente) Enviando datagrama...");
+                socket.send(paqueteSalida);
 
-                System.out.println("CLIENTE\nLeyendo mensaje del servidor...\n");
-                mensajeServidor = is.read();
-                if (mensajeServidor == 0) {
+                //Recibe la respuesta del servidor en un array de bytes
+                System.out.println("(Cliente) Recibiendo respuesta...");
+                byte[] bufferEntrada = new byte[64];
+                DatagramPacket paqueteEntrada = new DatagramPacket(bufferEntrada, bufferEntrada.length, direccionServidor,
+                        puertoServidor);
+                socket.receive(paqueteEntrada);
+                mensajeServidor = new String(bufferEntrada).replaceAll("\\D", "");
+                //Comprueba si el servidor dice que ha acertado o no y muestra el mensaje correspondiente
+                if (Integer.parseInt(mensajeServidor) == 0) {
                     System.out.println("Has acertado  :)");
                     acertado = true;
                 } else {
-                    System.out.println(((mensajeServidor > 1) ? "El número secreto es mayor que el introducido" : "El número secreto es menor que el introducido") + ", inténtalo de nuevo  :(");
+                    System.out.println(((Integer.parseInt(mensajeServidor) > 1) ? "El número secreto es mayor que el introducido" : "El número secreto es menor que el introducido") + ", inténtalo de nuevo  :(");
                 }
             }
+            //Cierra la conexión con el servidor
+            System.out.println("(Cliente): Cerrando conexión...");
+            socket.close();
+            System.out.println("(Cliente): Conexión cerrada.");
 
-            System.out.println("CLIENTE\nCerrando flujos de E/S...\n");
-            os.close(); //Cierra flujo lectura
-            is.close(); //Cierra flujo escritura
-
-            socketClient.close(); //Cierra la conexión
-        } catch (UnknownHostException e) {
-            System.out.println("Error, no se encuentra el host");
+        } catch (SocketException e) {
+            System.err.println("Error al conectar con el servidor.");
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Error con la conexión");
+            System.err.println("No se ha podido enviar o recibir el paquete");
             e.printStackTrace();
         }
     }
@@ -53,7 +68,7 @@ public class Cliente {
      *
      * @return Entero introducido por consola
      **/
-    private static int pedirNumACliente() {
+    private static String pedirNumACliente() {
         Scanner s = new Scanner(System.in);
         int num = 0;
         boolean salir;
@@ -65,6 +80,6 @@ public class Cliente {
                 salir = false;
             } else salir = true;
         } while (!salir);
-        return num;
+        return String.valueOf(num);
     }
 }

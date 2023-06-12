@@ -1,63 +1,50 @@
 package ejercicio3_comunicacion_multihilo_con_sockets.ejercicio1;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
+
+/* Crea una aplicación cliente/servidor que se comuniquen vía UDP que realice lo siguiente:
+ *
+ * El servidor debe generar un número secreto de forma aleatoria entre el 0 al 100.
+ *
+ * El cliente le solicita al usuario un número por teclado y lo envía al servidor.
+ * Debe seguir preguntando números al cliente hasta que adivine el número secreto.
+ * Para ello, el servidor para cada número que le envía el cliente le indicará si es
+ * menor, mayor o es el número secreto del servidor.
+ *
+ * Utiliza multihilo para que el servidor pueda recibir más de una petición cada vez.
+*/
 
 public class Servidor {
     public static void main(String[] args) {
-        //int numAleatorio, numCliente;
-        //boolean acertado = false;
+        DatagramSocket socket = null;
+        String mensajeRecibido;
+        int numAleatorio = (int) (Math.random() * 100);
         try {
-            System.out.println("SERVER:\nAbriendo conexión...\n");
-            ServerSocket socketServer = new ServerSocket(1500); //crea el socket con el puerto 2500
+            // 1 - Crear DatagramSocket y le indicamos el puerto
+            System.out.println("(Servidor) Creando socket...");
+            socket = new DatagramSocket(50000);
 
             while (true) {
-                System.out.println("SERVER:\nEsperando peticiones...\n");
-                Socket socketClient = socketServer.accept(); //Espera a que haya una petición del cliente y la acepta cunado llega
+                // 2 - Crear array de bytes que actuará de buffer
+                byte[] buffer = new byte[64];
 
-                /*numAleatorio = (int) (Math.random() * 100);
+                // 3 - Creación de datagrama con la clase DatagramPacket
+                DatagramPacket datagramaEntrada = new DatagramPacket(buffer, buffer.length);
 
-                System.out.println("SERVER:\nAbriendo flujos de E/S...\n");
-                InputStream is = socketClient.getInputStream(); //Abre flujo de lectura
-                OutputStream os = socketClient.getOutputStream(); //Abre flujo de escritura
+                // 4 - Recepción del datagrama mediante el método receive
+                System.out.println("(Servidor) Esperando peticiones...");
+                socket.receive(datagramaEntrada);
 
-                while (!acertado) {
-                    System.out.println("SERVER:\nLeyendo mensaje del cliente...\n");
-                    numCliente = is.read();
-                    System.out.println("MENSAJE DEL CLIENTE\nEl cliente ha enviado el número " + numCliente + "\n");
+                new GestorProcesos(socket, datagramaEntrada, numAleatorio).start();
 
-                    System.out.println("SERVER:\nEnviando mensaje al cliente...\n");
-                    if (numAleatorio == numCliente){
-                        os.write(0);
-                        acertado = true;
-                    } else if(numAleatorio < numCliente){
-                        os.write(1);
-                    }else {
-                        os.write(2);
-                    }
-                }
-
-                System.out.println("SERVER:\nCerrando flujos de E/S...\n");
-                is.close(); //Cierra flujo de lectura
-                os.close(); //Cierra flujo de escritura
-
-                socketClient.close();*/
-                new GestorProcesos(socketClient).start();
             }
-
+        } catch (SocketException e) {
+            System.out.println("Error al crear el Socket");
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Error al crear el socket");
+            System.out.println("Error al recibir el paquete");
             e.printStackTrace();
         }
-    }
-
-    public static boolean esPrimo(int numero) {
-        boolean primo = false;
-        for (int x = 2; x < numero / 2 && !primo; x++) {
-            primo = (numero % x != 0);
-        }
-        primo = !(numero == 0 || numero == 1);
-        return primo;
     }
 }

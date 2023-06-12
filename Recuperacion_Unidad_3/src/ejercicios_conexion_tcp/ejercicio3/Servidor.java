@@ -14,7 +14,8 @@ public class Servidor {
             ServerSocket socketServer = new ServerSocket(2000); //crea el socket con el puerto 2500
 
             while (true) {
-                System.out.println("SERVER:\nEsperando peticiones...\n");
+                System.out.println("SERVER" +
+                        "\nEsperando peticiones...\n");
                 Socket socketClient = socketServer.accept(); //Espera a que haya una petición del cliente y la acepta cunado llega
 
                 numAleatorio = (int) (Math.random() * 100);
