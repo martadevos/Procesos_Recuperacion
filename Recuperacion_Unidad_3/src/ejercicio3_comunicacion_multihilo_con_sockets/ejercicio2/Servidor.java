@@ -9,7 +9,7 @@ public class Servidor {
 
         try {
             // 1 - Crear socket de tipo servidor y le indicamos el puerto
-            ServerSocket servidor = new ServerSocket(49200);
+            ServerSocket servidor = new ServerSocket(49000);
             Socket peticion;
             while (true) {
                 // 2 - Queda a la espera de peticiones y las acepta cuando las recibe

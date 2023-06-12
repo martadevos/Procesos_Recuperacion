@@ -2,7 +2,6 @@ package ejercicio3_comunicacion_multihilo_con_sockets.ejercicio1;
 
 import java.io.*;
 import java.net.*;
-
 public class Servidor {
     public static void main(String[] args) {
         DatagramSocket socket = null;

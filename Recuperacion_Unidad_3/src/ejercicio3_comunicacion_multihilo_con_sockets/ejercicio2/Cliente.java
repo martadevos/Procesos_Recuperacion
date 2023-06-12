@@ -1,30 +1,52 @@
 package ejercicio3_comunicacion_multihilo_con_sockets.ejercicio2;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class Cliente {
     public static void main(String[] args) {
-
+        Scanner s = new Scanner(System.in);
         try {
             // 1 - Crear un socket de tipo cliente indicando IP y puerto del servidor
             System.out.println("(Cliente) Estableciendo conexión con el servidor");
-            Socket cliente = new Socket("192.168.1.128", 49200);
+            InetAddress direccion = InetAddress.getLocalHost();
+            Socket cliente = new Socket(direccion, 49000);
 
             // 2 - Abrir flujos de lectura y escritura
             InputStream is = cliente.getInputStream();
             OutputStream os = cliente.getOutputStream();
             System.out.println("(Cliente) Conexión establecida");
 
-            // 3 - Intercambiar datos con el servidor
+            // 3 - Intercambio de datos con el servidor
+            System.out.println("(Cliente): Envía el número al servidor...");
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            BufferedWriter bw = new BufferedWriter(osw);
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            BufferedReader br = new BufferedReader(isr);
 
-            // Leo mensajes que me envía el servidor
-            System.out.println("El servidor me envía el siguiente mensaje: " + is.read());
+            System.out.println("(Cliente): Introduzca una dirección web. Ej: www.google.es");
+            String mensajeEnviar = s.nextLine();
+            bw.write(mensajeEnviar);
+            bw.newLine();
+            bw.flush();
 
-            // 4 - Cerrar flujos de lectura y escritura
+            System.out.println("(Cliente): Lectura del mensaje del servidor...");
+            String mensajeServidor = br.readLine();
+            if (mensajeServidor.matches("\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}")) {
+                System.out.println("(Cliente): IP recibida: " + mensajeServidor);
+            } else {
+                System.out.println("(Cliente): La dirección web introducida no se encuentra registrada");
+            }
+
+            // 4 - Cerrar los flujos de lectura y escritura
+            System.out.println("(Cliente): Cerramos flujo de lectura y escritura...");
+            bw.close();
+            osw.close();
+            br.close();
+            isr.close();
             is.close();
             os.close();
 
