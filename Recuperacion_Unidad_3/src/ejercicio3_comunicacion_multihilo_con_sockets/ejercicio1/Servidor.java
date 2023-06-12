@@ -3,18 +3,6 @@ package ejercicio3_comunicacion_multihilo_con_sockets.ejercicio1;
 import java.io.*;
 import java.net.*;
 
-/* Crea una aplicación cliente/servidor que se comuniquen vía UDP que realice lo siguiente:
- *
- * El servidor debe generar un número secreto de forma aleatoria entre el 0 al 100.
- *
- * El cliente le solicita al usuario un número por teclado y lo envía al servidor.
- * Debe seguir preguntando números al cliente hasta que adivine el número secreto.
- * Para ello, el servidor para cada número que le envía el cliente le indicará si es
- * menor, mayor o es el número secreto del servidor.
- *
- * Utiliza multihilo para que el servidor pueda recibir más de una petición cada vez.
-*/
-
 public class Servidor {
     public static void main(String[] args) {
         DatagramSocket socket = null;
