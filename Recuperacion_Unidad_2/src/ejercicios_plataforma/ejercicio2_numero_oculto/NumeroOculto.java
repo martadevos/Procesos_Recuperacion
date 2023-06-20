@@ -14,54 +14,30 @@ package ejercicios_plataforma.ejercicio2_numero_oculto;
 public class NumeroOculto extends Thread {
     public static int numeroAdivinar;
     public static boolean terminado = false;
-    private int numero;
-
 
     public NumeroOculto() {
-        super();
-        this.numero = 0;
     }
-
-
-
-    public int getNumero() {
-        return numero;
-    }
-
-
-
-    public void setNumero(int numero) {
-        this.numero = numero;
-    }
-
-
 
     @Override
     public void run() {
-        int opc = propuestaNumero(this.getNumero());
-
-        while(opc==0) {
-            this.setNumero((int) (Math.random()*100));
-            opc = propuestaNumero(this.getNumero());
+        int opc = 0;
+        while (opc == 0) {
+            opc = propuestaNumero((int) (Math.random() * 10) + 1);
         }
 
     }
 
-    synchronized public static int propuestaNumero(int num) {
+    public static int propuestaNumero(int num) {
         int opc = 0;
-
+        System.out.println("Propuesta " + Thread.currentThread().getName() + ": " + num);
         if (num == numeroAdivinar && !terminado) {
             opc = 1;
             terminado = true;
-            System.out.println(Thread.currentThread().getName() + " HA ACERTADO");
-            Thread.currentThread().interrupt();
-
+            System.out.println(Thread.currentThread().getName() + " HA ACERTADO el numero " + num);
         } else if (terminado) {
             opc = -1;
             System.out.println(Thread.currentThread().getName() + " ya ha acertado otro hilo");
-            currentThread().interrupt();
         }
-
         return opc;
     }
 
