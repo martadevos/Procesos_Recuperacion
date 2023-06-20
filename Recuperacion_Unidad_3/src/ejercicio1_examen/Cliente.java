@@ -56,8 +56,7 @@ public class Cliente {
     }
 
     /**
-     * Función que pide al usuario que escriba una función, comprueba que el
-     * formato sea correcto y la devuelve
+     * Función que pide al usuario que escriba una función y la devuelve
      *
      * @return Operación introducida por consola
      **/
