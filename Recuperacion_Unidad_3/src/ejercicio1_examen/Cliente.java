@@ -40,7 +40,8 @@ public class Cliente {
             socket.receive(paqueteEntrada);
             mensajeServidor = new String(bufferEntrada).replaceAll("\\D", "");
             //Escribe el mensaje del servidor
-            System.out.println(mensajeServidor);
+            if (Integer.parseInt(mensajeServidor) == 0) System.out.println("El formato introducido no es correcto");
+            else System.out.println(mensajeServidor);
             //Cierra la conexión con el servidor
             socket.close();
             System.out.println("(Cliente): Conexión cerrada.");
@@ -64,24 +65,8 @@ public class Cliente {
         Scanner s = new Scanner(System.in);
         String[] cadena;
         String cadenaEnviar;
-        boolean salir = true;
-        do {
-            System.out.println("Introduzca una cadena con el siguiente formato: num;operacion;num. \nnum deben ser números enteros y operación debe ser una de las siguientes operaciones aritméticas: +, -, *, /");
-            cadenaEnviar = s.nextLine();
-            cadena = cadenaEnviar.split(";");
-            try {
-                Integer.parseInt(cadena[0]);
-                Integer.parseInt(cadena[2]);
-                salir = true;
-                if (!Objects.equals(cadena[1], "+") && !Objects.equals(cadena[1], "-") && !Objects.equals(cadena[1], "*") && !Objects.equals(cadena[1], "/")) {
-                    System.out.println("Error, el formato introducido no es correcto");
-                    salir = false;
-                }
-            } catch (Exception e) {
-                salir = false;
-                System.out.println("Error, el formato introducido no es correcto");
-            }
-        } while (!salir);
+        System.out.println("Introduzca una cadena con el siguiente formato: num;operacion;num. \nnum deben ser números enteros y operación debe ser una de las siguientes operaciones aritméticas: +, -, *, /");
+        cadenaEnviar = s.nextLine();
         return cadenaEnviar;
     }
 }
