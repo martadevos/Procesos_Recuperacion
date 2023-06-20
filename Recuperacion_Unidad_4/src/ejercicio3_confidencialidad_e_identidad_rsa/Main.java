@@ -29,7 +29,7 @@ public class Main {
         System.out.println("Se va a descifrar el fichero");
         infoDescifrada = new ArrayList<>();
         for (String info : infoCifrada) {
-            infoDescifrada.add(Descifrado.descifraCadena(info, "src\\ejercicio3_confidencialidad_e_identidad_rsa\\ficheroClavePrivadaDestinatario.key"));
+            infoDescifrada.add(Descifrado.descifraCadena(info, "src\\ejercicio3_confidencialidad_e_identidad_rsa\\ficheroClavePublicaEmisor.key", "src\\ejercicio3_confidencialidad_e_identidad_rsa\\ficheroClavePrivadaDestinatario.key"));
         }
         System.out.println("Se va a escribir el fichero descifrado");
         for (String info : infoDescifrada) {

@@ -1,8 +1,13 @@
 package ejercicio3_confidencialidad_e_identidad_rsa;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -11,24 +16,56 @@ import javax.crypto.NoSuchPaddingException;
 
 public class Descifrado {
 
-    public static String descifraCadena(String cadenaCifrada, String rutaFicheroClave) {
+    public static String descifraCadena(String cadenaCifrada,  String rutaFicheroClavePublica, String rutaFicheroClavePrivada) {
+        PublicKey clavePublicaEmisor;
+        PrivateKey clavePrivadaReceptor;
+
+        Cipher descifradorEmisor;
+        Cipher descifradorReceptor;
         String cadenaDescifrada = "";
         try {
             // Tomamos la clave privada
-            PrivateKey clavePrivada = KeysManager.getClavePrivada(rutaFicheroClave);
+            clavePrivadaReceptor = KeysManager.getClavePrivada(rutaFicheroClavePrivada);
+            clavePublicaEmisor = KeysManager.getClavePublica(rutaFicheroClavePublica);
+            cadenaCifrada = cadenaCifrada.trim();
 
-            Cipher cipher = Cipher.getInstance("RSA");
+            byte[] mensaje = Base64.getDecoder().decode(cadenaCifrada);
 
-            // Desciframos con la clave privada
-            cipher.init(Cipher.DECRYPT_MODE, clavePrivada);
+            descifradorEmisor = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            descifradorReceptor = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 
-            byte[] mensajeCifrado = Base64.getDecoder().decode(cadenaCifrada);
+            //Desciframos claves
+            descifradorEmisor.init(Cipher.DECRYPT_MODE,clavePublicaEmisor);
+            descifradorReceptor.init(Cipher.DECRYPT_MODE,clavePrivadaReceptor);
 
-            // Se obtiene el mensaje descifrado
-            byte[] mensaje = cipher.doFinal(mensajeCifrado);
+            int tamano = (((RSAPublicKey)clavePublicaEmisor).getModulus().bitLength() + 7) / 8;
 
-            // Lo imprimimos por pantalla en Base64
-            cadenaDescifrada = new String(mensaje);
+            ByteArrayOutputStream bufferSalida = new ByteArrayOutputStream();
+
+            int tamanoNuevo;
+
+            //Descifra el mensaje por bloques con la clave privada
+            for (int i = 0; i < mensaje.length; i += tamanoNuevo) {
+                tamanoNuevo = Math.min(tamano, mensaje.length - i);
+                byte[] bloqueCifrado = Arrays.copyOfRange(mensaje, i, i + tamanoNuevo);
+                byte[] archivoDescifrado = descifradorReceptor.doFinal(bloqueCifrado);
+                bufferSalida.write(archivoDescifrado);
+            }
+
+            mensaje = bufferSalida.toByteArray();
+
+            bufferSalida = new ByteArrayOutputStream();
+
+            //Descifra el mensaje por bloques con la clave publica
+            for (int i = 0; i < mensaje.length; i += tamanoNuevo) {
+                tamanoNuevo = Math.min(tamano, mensaje.length - i);
+                byte[] bloqueCifrado = Arrays.copyOfRange(mensaje, i, i + tamanoNuevo);
+                byte[] mensajeDescrifrado = descifradorEmisor.doFinal(bloqueCifrado);
+                bufferSalida.write(mensajeDescrifrado);
+            }
+
+            // Lo asignamos a la variable de salida
+            cadenaDescifrada = bufferSalida.toString();
 
 
         } catch (NoSuchAlgorithmException e) {
@@ -46,6 +83,8 @@ public class Descifrado {
         } catch (BadPaddingException e) {
             System.err.println("El padding utilizado es erróneo");
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return cadenaDescifrada;
 

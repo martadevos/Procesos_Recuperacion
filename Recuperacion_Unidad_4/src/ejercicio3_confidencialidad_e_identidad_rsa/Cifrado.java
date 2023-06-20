@@ -20,9 +20,9 @@ public class Cifrado {
             // Ciframos con la clave pública
             PublicKey clavePublica = KeysManager.getClavePublica(rutaFicheroClavePublica);
             PrivateKey clavePrivada = KeysManager.getClavePrivada(rutaFicheroClavePrivada);
-            byte[] mensaje = mensajeCifrar.getBytes(StandardCharsets.UTF_8);
+            byte[] mensaje = mensajeCifrar.getBytes();
 
-            Cipher cipher = Cipher.getInstance("RSA");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, clavePrivada);
 
             // Se cifra el mensaje
@@ -32,7 +32,7 @@ public class Cifrado {
             byte[] mensajeCifrado2 = cifrarContenido(mensajeCifrado1, clavePublica);
 
             // Lo imprimimos por pantalla en Base64
-            cadenaCifrada = Base64.getEncoder().encodeToString(mensajeCifrado1);
+            cadenaCifrada = Base64.getEncoder().encodeToString(mensajeCifrado2);
 
         } catch (NoSuchAlgorithmException e) {
             System.err.println("El algoritmo seleccionado no existe");
