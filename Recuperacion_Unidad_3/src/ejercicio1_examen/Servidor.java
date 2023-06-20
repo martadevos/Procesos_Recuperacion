@@ -1,9 +1,7 @@
 package ejercicio1_examen;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.*;
 
 public class Servidor {
     public static void main(String[] args) {
@@ -11,20 +9,16 @@ public class Servidor {
         try {
             // 1 - Crear DatagramSocket y le indicamos el puerto
             System.out.println("(Servidor) Creando socket...");
-            socket = new DatagramSocket(50000);
+            ServerSocket servidor = new ServerSocket(49000);
+            Socket peticion;
 
             while (true) {
-                // 2 - Crear array de bytes que actuará de buffer
-                byte[] buffer = new byte[64];
 
-                // 3 - Creación de datagrama con la clase DatagramPacket
-                DatagramPacket datagramaEntrada = new DatagramPacket(buffer, buffer.length);
+                System.out.println("Servidor se encuentra a la escucha de peticiones...");
+                peticion = servidor.accept();
+                System.out.println("(Servidor) conexión establecida...");
 
-                // 4 - Recepción del datagrama mediante el método receive
-                System.out.println("(Servidor) Esperando peticiones...");
-                socket.receive(datagramaEntrada);
-
-                new GestorProcesos(socket, datagramaEntrada).start();
+                new GestorProcesos(peticion).start();
 
             }
         } catch (SocketException e) {

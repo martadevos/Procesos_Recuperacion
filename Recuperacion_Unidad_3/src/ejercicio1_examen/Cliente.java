@@ -1,10 +1,7 @@
 package ejercicio1_examen;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.io.*;
+import java.net.*;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -19,31 +16,38 @@ public class Cliente {
         try {
             //Crea y abre la conexión con el servidor
             System.out.println("(Cliente): Estableciendo conexión...");
-            InetAddress direccionServidor = InetAddress.getByName(nombreServidor);
-            socket = new DatagramSocket();
+            InetAddress direccion = InetAddress.getLocalHost();
+            Socket cliente = new Socket(direccion, 49000);
 
-            byte[] bufferSalida;
+            InputStream is = cliente.getInputStream();
+            OutputStream os = cliente.getOutputStream();
+
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            BufferedWriter bw = new BufferedWriter(osw);
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            BufferedReader br = new BufferedReader(isr);
+
             System.out.println("CLIENTE\nEnviando mensaje al servidor...");
             //Llama a la función para pedir una operación y la asigna a la variable operacion
             operacion = pedirOperacionACliente();
-            //Convierte el número introducido en un array de bytes
-            bufferSalida = operacion.getBytes();
-            //Envía el datagrama al servidor
-            DatagramPacket paqueteSalida = new DatagramPacket(bufferSalida, bufferSalida.length, direccionServidor, puertoServidor);
-            socket.send(paqueteSalida);
+            bw.write(operacion);
+            bw.newLine();
+            bw.flush();
 
             //Recibe la respuesta del servidor en un array de bytes
             System.out.println("(Cliente) Recibiendo respuesta...");
-            byte[] bufferEntrada = new byte[64];
-            DatagramPacket paqueteEntrada = new DatagramPacket(bufferEntrada, bufferEntrada.length, direccionServidor,
-                    puertoServidor);
-            socket.receive(paqueteEntrada);
-            mensajeServidor = new String(bufferEntrada).replaceAll("\\D", "");
+            mensajeServidor = br.readLine();
             //Escribe el mensaje del servidor
             if (Integer.parseInt(mensajeServidor) == 0) System.out.println("El formato introducido no es correcto");
             else System.out.println(mensajeServidor);
             //Cierra la conexión con el servidor
-            socket.close();
+            bw.close();
+            osw.close();
+            br.close();
+            isr.close();
+            is.close();
+            os.close();
+            cliente.close();
             System.out.println("(Cliente): Conexión cerrada.");
 
         } catch (SocketException e) {

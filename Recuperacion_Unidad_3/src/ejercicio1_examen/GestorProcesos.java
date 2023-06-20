@@ -1,20 +1,20 @@
 package ejercicio1_examen;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class GestorProcesos extends Thread {
-    DatagramSocket socket;
-    DatagramPacket datagramaEntrada;
+    Socket socket;
+    private InputStream is;
+    private OutputStream os;
 
-    public GestorProcesos(DatagramSocket socket, DatagramPacket datagramaEntrada) {
-        super();
+    public GestorProcesos(Socket socket) {
         this.socket = socket;
-        this.datagramaEntrada = datagramaEntrada;
     }
 
     @Override
@@ -25,15 +25,22 @@ public class GestorProcesos extends Thread {
     public void comprobarRealizarOperacionYEnviarRespuestaCliente() {
         String mensajeRecibido;
         String[] mensajeSeparado;
-        byte[] mensajeEnviado = "".getBytes();
+        String mensajeEnviado = "";
         boolean correcto = true;
 
         try {
             //Recibe el mensaje del cliente
             System.out.println("(Servidor): Leyendo mensaje del cliente...");
-            mensajeRecibido = new String(datagramaEntrada.getData()).replaceAll("[^\\d+\\-*/;]", "");
+            is = socket.getInputStream();
+            os = socket.getOutputStream();
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            BufferedReader br = new BufferedReader(isr);
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            BufferedWriter bw = new BufferedWriter(osw);
+
+            mensajeRecibido = br.readLine();
             mensajeSeparado = mensajeRecibido.split(";");
-            System.out.println(Arrays.toString(mensajeSeparado));
+
             try {
                 Integer.parseInt(mensajeSeparado[0]);
                 Integer.parseInt(mensajeSeparado[2]);
@@ -49,17 +56,25 @@ public class GestorProcesos extends Thread {
             if (correcto) {
                 //Comprueba cual es la operación a realizar, la hace y asigna el resultado
                 switch (mensajeSeparado[1]) {
-                    case "+" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) + Integer.parseInt(mensajeSeparado[2])).getBytes();
-                    case "-" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) - Integer.parseInt(mensajeSeparado[2])).getBytes();
-                    case "*" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) * Integer.parseInt(mensajeSeparado[2])).getBytes();
-                    case "/" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) / Integer.parseInt(mensajeSeparado[2])).getBytes();
+                    case "+" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) + Integer.parseInt(mensajeSeparado[2]));
+                    case "-" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) - Integer.parseInt(mensajeSeparado[2]));
+                    case "*" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) * Integer.parseInt(mensajeSeparado[2]));
+                    case "/" -> mensajeEnviado = Integer.toString(Integer.parseInt(mensajeSeparado[0]) / Integer.parseInt(mensajeSeparado[2]));
                 }
-            }else mensajeEnviado = "0".getBytes();
+            }else mensajeEnviado = "0";
 
             //Envía la respuesta al cliente
             System.out.println("(Servidor): Enviando datagrama...");
-            DatagramPacket packetSalida = new DatagramPacket(mensajeEnviado, mensajeEnviado.length, datagramaEntrada.getAddress(), datagramaEntrada.getPort());
-            socket.send(packetSalida);
+            bw.write(mensajeEnviado);
+            bw.newLine();
+            bw.flush();
+
+            br.close();
+            isr.close();
+            is.close();
+            bw.close();
+            osw.close();
+            os.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
